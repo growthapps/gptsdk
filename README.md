@@ -1,4 +1,4 @@
-<h1 align="center">gptsdk/gptsdk-library</h1>
+<h1 align="center">growthapps/gptsdk</h1>
 
 <p align="center">
     <strong>Develop ai features in your application 10x faster</strong>
@@ -37,7 +37,7 @@ TODO: Use this space to provide more details about your package. Try to be
 Install this package as a dependency using [Composer](https://getcomposer.org).
 
 ``` bash
-composer require gptsdk/gptsdk-library
+composer require growthapps/gptsdk
 ```
 
 <!--
@@ -54,6 +54,18 @@ $example = new Example();
 echo $example->greet('fellow human');
 ```
 -->
+
+
+## Architecuture
+### Runners
+#### PromptApiRunner
+Sends a request to gpt-sdk.com
+
+#### PromptLocalRunner
+Sends a request directly to llm.
+
+
+### Webhooks (TBD)
 
 
 ## Contributing

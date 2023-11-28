@@ -1,5 +1,5 @@
 {
-    "name": "gptsdk/gptsdk-library",
+    "name": "growthapps/gptsdk",
     "description": "Develop ai features in your application 10x faster",
     "license": "MIT",
     "type": "library",
@@ -20,7 +20,9 @@
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "doctrine/collections": "^2.1",
+        "symfony/http-client": "^6.3"
     },
     "require-dev": {
         "ramsey/devtools": "^2.0"
