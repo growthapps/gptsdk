@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Growthapps\Gptsdk\Logger;
 
 use Growthapps\Gptsdk\PromptRun;

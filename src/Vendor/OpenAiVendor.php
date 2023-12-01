@@ -1,16 +1,22 @@
 <?php
+
 /**
  * This file is part of gptsdk/gptsdk-library
  *
  * @copyright Copyright (c) AndriiMz <moroz97andrze@gmail.com>
  * @license https://opensource.org/license/mit/ MIT License
  */
+
 declare(strict_types=1);
+
 namespace Growthapps\Gptsdk\Vendor;
 
 use Growthapps\Gptsdk\Enum\PromptRunState;
 use Growthapps\Gptsdk\PromptRun;
 use Symfony\Component\HttpClient\HttpClient;
+
+use function array_filter;
+use function array_merge;
 
 class OpenAiVendor implements VendorInterface
 {
@@ -29,9 +35,9 @@ class OpenAiVendor implements VendorInterface
                         'n' => 1,
                         'max_tokens' => $run->llmOptions['max_tokens'] ?? '',
                         'temperature' => $run->llmOptions['temperature'] ?? '',
-                    ]
-                ), fn($option) => $option)
-            ]
+                    ],
+                ), fn ($option) => $option),
+            ],
         );
 
         $statusCode = $response->getStatusCode();
@@ -39,20 +45,20 @@ class OpenAiVendor implements VendorInterface
             return $run->setError(
                 $response->getContent(false),
             )->setState(
-                PromptRunState::FAILED
+                PromptRunState::FAILED,
             );
         }
 
         $json = $response->toArray();
 
         return $run->setResponse(
-            $json['choices'][0]['message']['content'] ?? ''
+            $json['choices'][0]['message']['content'] ?? '',
         )->setInputCost(
-            $json['usage']['prompt_tokens'] ?? 0
+            $json['usage']['prompt_tokens'] ?? 0,
         )->setOutputCost(
-            $json['usage']['completion_tokens'] ?? 0
+            $json['usage']['completion_tokens'] ?? 0,
         )->setState(
-            PromptRunState::SUCCESS
+            PromptRunState::SUCCESS,
         );
     }
 }

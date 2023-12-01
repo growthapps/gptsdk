@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Growthapps\Gptsdk\Runner;
 
 use Growthapps\Gptsdk\ApiClient\GptSdkApiClient;
@@ -16,8 +18,8 @@ class PromptApiRunner implements PromptRunnerInterface
 
     final public function run(PromptRun $promptRun): PromptRun
     {
-       return $this->gptSdkApiClient->runPrompt(
-           $promptRun
-       );
+        return $this->gptSdkApiClient->runPrompt(
+            $promptRun,
+        );
     }
 }

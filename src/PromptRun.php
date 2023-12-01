@@ -1,11 +1,14 @@
 <?php
+
 /**
  * This file is part of gptsdk/gptsdk-library
  *
  * @copyright Copyright (c) AndriiMz <moroz97andrze@gmail.com>
  * @license https://opensource.org/license/mit/ MIT License
  */
+
 declare(strict_types=1);
+
 namespace Growthapps\Gptsdk;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,18 +30,18 @@ class PromptRun
 
     private PromptRunState $state = PromptRunState::CREATED;
 
-
     public function __construct(
         public readonly VendorEnum $vendorKey,
         public readonly ArrayCollection $promptMessages,
         public readonly string $promptKey,
         public readonly ?array $llmOptions = null,
         public readonly ?ArrayCollection $params = null,
-        public readonly ?array $attributes = null,
-        public readonly ?array $payload = null,
+        public readonly ?ArrayCollection $attributes = null,
+        public readonly ?ArrayCollection $payload = null,
         public readonly string $paramOpenTag = '[[',
         public readonly string $paramCloseTag = ']]',
-    ) {}
+    ) {
+    }
 
     public function getCompiledPrompt(): ?ArrayCollection
     {
@@ -48,6 +51,7 @@ class PromptRun
     public function setCompiledPrompt(ArrayCollection $compiledPrompt): PromptRun
     {
         $this->compiledPrompt = $compiledPrompt;
+
         return $this;
     }
 
@@ -59,6 +63,7 @@ class PromptRun
     public function setState(PromptRunState $state): PromptRun
     {
         $this->state = $state;
+
         return $this;
     }
 
@@ -70,6 +75,7 @@ class PromptRun
     public function setResponse(?string $response): PromptRun
     {
         $this->response = $response;
+
         return $this;
     }
 
@@ -81,6 +87,7 @@ class PromptRun
     public function setError(?string $error): PromptRun
     {
         $this->error = $error;
+
         return $this;
     }
 
@@ -92,6 +99,7 @@ class PromptRun
     public function setInputCost(?int $inputCost): PromptRun
     {
         $this->inputCost = $inputCost;
+
         return $this;
     }
 
@@ -103,6 +111,7 @@ class PromptRun
     public function setOutputCost(?int $outputCost): PromptRun
     {
         $this->outputCost = $outputCost;
+
         return $this;
     }
 }

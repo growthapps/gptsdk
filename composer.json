@@ -41,12 +41,12 @@
     },
     "config": {
         "allow-plugins": {
-            "php-http/discovery": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "ramsey/composer-repl": true,
-            "phpstan/extension-installer": true,
-            "ergebnis/composer-normalize": true,
             "captainhook/plugin-composer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "php-http/discovery": true,
+            "phpstan/extension-installer": true,
+            "ramsey/composer-repl": true,
             "ramsey/devtools": true
         },
         "sort-packages": true

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Growthapps\Gptsdk\Runner;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -8,6 +10,9 @@ use Growthapps\Gptsdk\Enum\PromptRunState;
 use Growthapps\Gptsdk\Logger\PromptLoggerInterface;
 use Growthapps\Gptsdk\PromptRun;
 use Growthapps\Gptsdk\Vendor\VendorInterface;
+use Throwable;
+
+use function assert;
 
 class PromptLocalRunner implements PromptRunnerInterface
 {
@@ -15,8 +20,9 @@ class PromptLocalRunner implements PromptRunnerInterface
         private PromptCompilerInterface $promptCompiler,
         /** @var ArrayCollection<VendorInterface> $vendors */
         private ArrayCollection $vendors,
-        private ?PromptLoggerInterface $promptLogger = null
-    ) {}
+        private ?PromptLoggerInterface $promptLogger = null,
+    ) {
+    }
 
     final public function run(PromptRun $promptRun): PromptRun
     {
@@ -27,7 +33,7 @@ class PromptLocalRunner implements PromptRunnerInterface
                 assert($vendor instanceof VendorInterface);
                 $promptRun = $vendor->execute($promptRun);
             }
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $promptRun = $promptRun
                 ->setError($e->getMessage())
                 ->setState(PromptRunState::FAILED);

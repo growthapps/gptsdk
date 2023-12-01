@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Growthapps\Gptsdk;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,5 +15,6 @@ class Prompt
         public ?ArrayCollection $params,
         public string $vendorKey,
         public readonly ?array $llmOptions = null,
-    ) {}
+    ) {
+    }
 }
