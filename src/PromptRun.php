@@ -27,6 +27,8 @@ class PromptRun
     private ?int $inputCost;
     private ?int $outputCost;
 
+    private float $startedAtMs;
+
 
     private PromptRunState $state = PromptRunState::CREATED;
 
@@ -41,6 +43,7 @@ class PromptRun
         public readonly string $paramOpenTag = '[[',
         public readonly string $paramCloseTag = ']]',
     ) {
+        $this->startedAtMs = microtime(true);
     }
 
     public function getCompiledPrompt(): ?ArrayCollection
@@ -113,5 +116,10 @@ class PromptRun
         $this->outputCost = $outputCost;
 
         return $this;
+    }
+
+    public function durationMs(): float
+    {
+        return microtime(true) - $this->startedAtMs;
     }
 }
