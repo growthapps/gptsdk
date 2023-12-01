@@ -118,7 +118,7 @@ class PromptRun
         return $this;
     }
 
-    public function durationMs(): float
+    public function getDurationMs(): float
     {
         return microtime(true) - $this->startedAtMs;
     }
