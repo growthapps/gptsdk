@@ -21,12 +21,10 @@ use Growthapps\Gptsdk\Enum\VendorEnum;
 class PromptRun
 {
     private ?ArrayCollection $compiledPrompt = null;
-
-    private ?string $response;
-    private ?string $error;
-    private ?int $inputCost;
-    private ?int $outputCost;
-
+    private ?string $response = null;
+    private ?string $error = null;
+    private ?int $inputCost = null;
+    private ?int $outputCost = null;
     private float $startedAtMs;
 
 
