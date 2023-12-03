@@ -36,7 +36,7 @@ class OpenAiVendor implements VendorInterface
                     array_merge(
                         $run->llmOptions,
                         [
-                            'messages' => $run->getCompiledPrompt()
+                            'messages' => $run->getCompiledPrompt()->toArray()
                         ],
                         [
                             'n' => 1,
