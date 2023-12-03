@@ -17,27 +17,29 @@ use Growthapps\Gptsdk\PromptRun;
 use Growthapps\Gptsdk\Request\GetPromptRequest;
 use Symfony\Component\HttpClient\HttpClient;
 
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function array_column;
 use function array_map;
 
 class GptSdkApiClient
 {
-    private HttpClient $httpClient;
-
-    public function __construct(string $apiKey, string $version = 'v1')
-    {
-        $this->httpClient = HttpClient::create(
+    public function __construct(
+        private HttpClientInterface $httpClient,
+        string $apiKey,
+        string $version = 'v1'
+    ) {
+        $this->httpClient = $this->httpClient->withOptions(
             [
                 'base_uri' => 'https://gpt-sdk.com/api/' . $version,
                 'auth_bearer' => $apiKey,
-            ],
+            ]
         );
     }
 
     final public function getPrompts(GetPromptRequest $request): ArrayCollection
     {
         $result = $this->httpClient->request(
-            'get',
+            'GET',
             '/prompts',
             [
                 'json' => [
@@ -111,7 +113,7 @@ class GptSdkApiClient
         )->toArray(), 'key', 'value') : [];
 
         $response = $this->httpClient->request(
-            'post',
+            'POST',
             "/prompts/$promptRun->promptKey/run",
             [
                 'json' => [

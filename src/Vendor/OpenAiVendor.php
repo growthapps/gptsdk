@@ -15,28 +15,34 @@ use Growthapps\Gptsdk\Enum\PromptRunState;
 use Growthapps\Gptsdk\PromptRun;
 use Symfony\Component\HttpClient\HttpClient;
 
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function array_filter;
 use function array_merge;
 
 class OpenAiVendor implements VendorInterface
 {
+    public function __construct(
+        private HttpClientInterface $httpClient
+    ) {}
+
     public function execute(PromptRun $run): PromptRun
     {
-        $httpClient = HttpClient::create([]);
-        $response = $httpClient->request(
+        $response = $this->httpClient->request(
             'post',
             'https://api.openai.com/v1/chat/completions',
             [
-                'auth_bearer' => $run->llmOptions['apiKey'] ?? '',
-                'json' => array_filter(array_merge(
-                    [
-                        'model' => $run->llmOptions['model'] ?? '',
-                        'messages' => $run->getCompiledPrompt(),
-                        'n' => 1,
-                        'max_tokens' => $run->llmOptions['max_tokens'] ?? '',
-                        'temperature' => $run->llmOptions['temperature'] ?? '',
-                    ],
-                ), fn ($option) => $option),
+                'auth_bearer' => $run->llmOptions['api_key'] ?? '',
+                'json' =>
+                    array_merge(
+                        $run->llmOptions,
+                        [
+                            'messages' => $run->getCompiledPrompt()
+                        ],
+                        [
+                            'n' => 1,
+                            'max_tokens' => 1000
+                        ]
+                    )
             ],
         );
 
