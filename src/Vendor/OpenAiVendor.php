@@ -33,7 +33,7 @@ class OpenAiVendor implements VendorInterface
             [
                 'auth_bearer' => $run->llmOptions['api_key'] ?? '',
                 'json' =>
-                    array_merge(
+                    array_intersect_key(array_merge(
                         $run->llmOptions,
                         [
                             'messages' => $run->getCompiledPrompt()->toArray()
@@ -42,7 +42,20 @@ class OpenAiVendor implements VendorInterface
                             'n' => 1,
                             'max_tokens' => 1000
                         ]
-                    )
+                    ), array_flip([
+                        'messages',
+                        'n',
+                        'max_tokens',
+                        'model',
+                        'frequency_penalty',
+                        'logit_bias',
+                        'presence_penalty',
+                        'response_format',
+                        'seed',
+                        'stop',
+                        'temperature',
+                        'top_p'
+                    ]))
             ],
         );
 
