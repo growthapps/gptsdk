@@ -97,7 +97,7 @@ class GptSdkApiClient
 
     public function runPrompt(
         PromptRun $promptRun,
-    ) {
+    ): PromptRun {
         $paramsArray = $promptRun->params ? array_column($promptRun->params->map(
             fn (PromptParam $promptParam) => [
                 'key' => $promptParam->key,
