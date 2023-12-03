@@ -28,7 +28,7 @@ class OpenAiVendor implements VendorInterface
     public function execute(PromptRun $run): PromptRun
     {
         $response = $this->httpClient->request(
-            'post',
+            'POST',
             'https://api.openai.com/v1/chat/completions',
             [
                 'auth_bearer' => $run->llmOptions['api_key'] ?? '',

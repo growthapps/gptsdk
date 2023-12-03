@@ -4,10 +4,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Growthapps\Gptsdk\ApiClient\GptSdkApiClient;
+use Symfony\Component\HttpClient\HttpClient;
 use Growthapps\Gptsdk\Enum\{ VendorEnum, Type };
 use Growthapps\Gptsdk\{ PromptRun, PromptMessage, PromptParam };
 
 $gptSdkClient = new GptSdkApiClient(
+    HttpClient::create(),
     'myapikey'
 );
 $promptRun = $gptSdkClient->runPrompt(
