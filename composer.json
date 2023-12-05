@@ -25,6 +25,7 @@
         "symfony/http-client": "^6.3"
     },
     "require-dev": {
+        "phpunit/phpunit": "^10.4",
         "ramsey/devtools": "^2.0"
     },
     "minimum-stability": "dev",
