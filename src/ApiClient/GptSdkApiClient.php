@@ -15,27 +15,41 @@ use Growthapps\Gptsdk\PromptMessage;
 use Growthapps\Gptsdk\PromptParam;
 use Growthapps\Gptsdk\PromptRun;
 use Growthapps\Gptsdk\Request\GetPromptRequest;
-use Symfony\Component\HttpClient\HttpClient;
-
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 use function array_column;
 use function array_map;
+use function count;
 
 class GptSdkApiClient
 {
     public function __construct(
         private HttpClientInterface $httpClient,
         string $apiKey,
-        string $version = 'v1'
+        string $version = 'v1',
     ) {
         $this->httpClient = $this->httpClient->withOptions(
             [
                 'base_uri' => 'https://gpt-sdk.com/api/' . $version,
                 'auth_bearer' => $apiKey,
-            ]
+            ],
         );
     }
 
+    /**
+     * @return ArrayCollection<array-key, Prompt>
+     *
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
     final public function getPrompts(GetPromptRequest $request): ArrayCollection
     {
         $result = $this->httpClient->request(
@@ -54,44 +68,74 @@ class GptSdkApiClient
             );
         }
 
+        /**
+         * @var array<array-key, array<string, string>> $data
+         */
+        $data = $result->toArray()['data'];
+
         return new ArrayCollection(array_map(
-            fn (array $promptData) => new Prompt(
-                promptKey: $promptData['key'],
-                promptMessages: new ArrayCollection(array_map(
-                    fn (array $message) => new PromptMessage(
-                        role: $message['role'],
-                        content: $message['content'],
-                    ),
-                    $promptData['prompt'] ?? [],
-                )),
-                attributes: new ArrayCollection(array_map(
-                    fn (array $attribute) => new PromptAttribute(
-                        key: $attribute['key'],
-                        type: Type::tryFrom($attribute['type']),
-                        value: $attribute['value'] ?? null,
-                    ),
-                    $promptData['attributes'] ?? [],
-                )),
-                params: new ArrayCollection(array_map(
-                    fn (array $params) => new PromptParam(
-                        key: $params['key'],
-                        type: Type::tryFrom($params['type']),
-                        nestedParams: new ArrayCollection(array_map(
-                            fn (array $nestedParam) => new PromptParam(
-                                key: $nestedParam['key'],
-                                type: Type::tryFrom($nestedParam['type']),
-                                value: $nestedParam['value'] ?? null,
-                            ),
-                            $params['nestedParams'] ?? [],
-                        )),
-                        nestedPrompt: $params['nestedPrompt'],
-                    ),
-                    $promptData['params'] ?? [],
-                )),
-                vendorKey: VendorEnum::tryFrom($promptData['connector']['vendor']),
-                llmOptions: $promptData['llmOptions'] ?? [],
-            ),
-            $result->toArray()['data'] ?? [],
+            function (array $promptData): Prompt {
+                /** @var array<array-key, array<string, string>> $promptMessages */
+                $promptMessages = $promptData['prompt'];
+                /** @var array<array-key, array<string, string>> $promptAttributes */
+                $promptAttributes = (array) ($promptData['attributes'] ?? []);
+                /** @var array<array-key, array<string, string>> $promptParams */
+                $promptParams = (array) ($promptData['params'] ?? []);
+                /** @var array<string, string> $promptConnector */
+                $promptConnector = $promptData['connector'];
+                /** @var array<string, string> $llmOptions */
+                $llmOptions = $promptData['llmOptions'];
+
+                return new Prompt(
+                    promptKey: $promptData['key'],
+                    promptMessages: new ArrayCollection(array_map(
+                        fn (array $message) => new PromptMessage(
+                            role: $message['role'],
+                            content: $message['content'],
+                        ),
+                        $promptMessages,
+                    )),
+                    attributes: new ArrayCollection(array_map(
+                        fn (array $attribute) => new PromptAttribute(
+                            key: $attribute['key'],
+                            type: Type::tryFrom($attribute['type']),
+                            value: $attribute['value'],
+                        ),
+                        $promptAttributes,
+                    )),
+                    params: new ArrayCollection(array_map(
+                        function (array $params) {
+                            $type = Type::tryFrom($params['type']);
+                            if ($type === Type::NESTED) {
+                                /** @var array<array-key, array<string, string>> $nestedParams */
+                                $nestedParams = (array) ($params['nestedParams'] ?? []);
+
+                                return new PromptParam(
+                                    key: $params['key'],
+                                    type: $type,
+                                    nestedParams: new ArrayCollection(array_map(
+                                        fn (array $nestedParam) => new PromptParam(
+                                            key: $nestedParam['key'],
+                                            type: Type::tryFrom($nestedParam['type']),
+                                        ),
+                                        $nestedParams,
+                                    )),
+                                    nestedPrompt: $params['nestedPrompt'],
+                                );
+                            }
+
+                            return new PromptParam(
+                                key: $params['key'],
+                                type: $type,
+                            );
+                        },
+                        $promptParams,
+                    )),
+                    vendorKey: VendorEnum::tryFrom($promptConnector['vendor']),
+                    llmOptions: new ArrayCollection($llmOptions),
+                );
+            },
+            $data,
         ));
     }
 
@@ -101,7 +145,7 @@ class GptSdkApiClient
         $paramsArray = $promptRun->params ? array_column($promptRun->params->map(
             fn (PromptParam $promptParam) => [
                 'key' => $promptParam->key,
-                'value' => !empty($promptParam->nestedParams) ?
+                'value' => $promptParam->nestedParams !== null ?
                     array_column($promptParam->nestedParams->map(
                         fn (PromptParam $promptParam) => [
                             'key' => $promptParam->key,
@@ -130,16 +174,17 @@ class GptSdkApiClient
         }
 
         $json = $response->toArray();
-        if (!empty($json['result']['error'])) {
+        $result = (array) ($json['result'] ?? []);
+        if (count($result) === 0 || $result['error']) {
             return $promptRun
-                ->setError($json['result']['error'])
+                ->setError((string) ($result['error'] ?? ''))
                 ->setState(PromptRunState::FAILED);
         }
 
         return $promptRun
-            ->setResponse($json['result']['result'])
-            ->setOutputCost($json['result']['inputCost'])
-            ->setInputCost($json['result']['outputCost'])
+            ->setResponse((string) ($result['result'] ?? ''))
+            ->setOutputCost((int) ($result['inputCost'] ?? 0))
+            ->setInputCost((int) ($result['outputCost'] ?? 0))
             ->setState(PromptRunState::SUCCESS);
     }
 }

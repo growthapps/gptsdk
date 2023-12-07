@@ -13,20 +13,30 @@ namespace Growthapps\Gptsdk\Vendor;
 
 use Growthapps\Gptsdk\Enum\PromptRunState;
 use Growthapps\Gptsdk\PromptRun;
-use Symfony\Component\HttpClient\HttpClient;
-
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use function array_filter;
+
+use function array_flip;
+use function array_intersect_key;
 use function array_merge;
 
 class OpenAiVendor implements VendorInterface
 {
     public function __construct(
-        private HttpClientInterface $httpClient
-    ) {}
+        private HttpClientInterface $httpClient,
+    ) {
+    }
 
     public function execute(PromptRun $run): PromptRun
     {
+        $compiledPrompt = $run->getCompiledPrompt();
+        if (!$compiledPrompt) {
+            return $run->setError(
+                'Empty Prompt',
+            )->setState(
+                PromptRunState::FAILED,
+            );
+        }
+
         $response = $this->httpClient->request(
             'POST',
             'https://api.openai.com/v1/chat/completions',
@@ -34,14 +44,14 @@ class OpenAiVendor implements VendorInterface
                 'auth_bearer' => $run->llmOptions['api_key'] ?? '',
                 'json' =>
                     array_intersect_key(array_merge(
-                        $run->llmOptions,
+                        $run->llmOptions ?? [],
                         [
-                            'messages' => $run->getCompiledPrompt()->toArray()
+                            'messages' => $compiledPrompt->toArray(),
                         ],
                         [
                             'n' => 1,
-                            'max_tokens' => 1000
-                        ]
+                            'max_tokens' => 1000,
+                        ],
                     ), array_flip([
                         'messages',
                         'n',
@@ -54,8 +64,8 @@ class OpenAiVendor implements VendorInterface
                         'seed',
                         'stop',
                         'temperature',
-                        'top_p'
-                    ]))
+                        'top_p',
+                    ])),
             ],
         );
 
@@ -69,13 +79,17 @@ class OpenAiVendor implements VendorInterface
         }
 
         $json = $response->toArray();
+        /** @var array<int, array<string, array<string, string>>> $choises */
+        $choises = $json['choices'];
+        /** @var array<string, int> $usage */
+        $usage = $json['usage'];
 
         return $run->setResponse(
-            $json['choices'][0]['message']['content'] ?? '',
+            $choises[0]['message']['content'] ?? '',
         )->setInputCost(
-            $json['usage']['prompt_tokens'] ?? 0,
+            $usage['prompt_tokens'] ?? 0,
         )->setOutputCost(
-            $json['usage']['completion_tokens'] ?? 0,
+            $usage['completion_tokens'] ?? 0,
         )->setState(
             PromptRunState::SUCCESS,
         );

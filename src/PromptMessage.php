@@ -21,6 +21,9 @@ class PromptMessage implements JsonSerializable
     ) {
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function jsonSerialize(): array
     {
         return [

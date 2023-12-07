@@ -15,11 +15,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Growthapps\Gptsdk\Enum\PromptRunState;
 use Growthapps\Gptsdk\Enum\VendorEnum;
 
-/**
- * @property PromptParam[] $params
- */
+use function microtime;
+
 class PromptRun
 {
+    /**
+     * @var ArrayCollection<array-key, PromptMessage>|null
+     */
     private ?ArrayCollection $compiledPrompt = null;
     private ?string $response = null;
     private ?string $error = null;
@@ -30,6 +32,13 @@ class PromptRun
 
     private PromptRunState $state = PromptRunState::CREATED;
 
+    /**
+     * @param ArrayCollection<array-key, PromptMessage> $promptMessages
+     * @param array<string, mixed>|null $llmOptions
+     * @param ArrayCollection<array-key, PromptParam>|null $params
+     * @param ArrayCollection<array-key, PromptAttribute>|null $attributes
+     * @param ArrayCollection<string, mixed>|null $payload
+     */
     public function __construct(
         public readonly VendorEnum $vendorKey,
         public readonly ArrayCollection $promptMessages,
@@ -44,11 +53,19 @@ class PromptRun
         $this->startedAtMs = microtime(true);
     }
 
+    /**
+     * @return ArrayCollection<array-key, PromptMessage>|null
+     */
     public function getCompiledPrompt(): ?ArrayCollection
     {
         return $this->compiledPrompt;
     }
 
+    /**
+     * @param ArrayCollection<array-key, PromptMessage> $compiledPrompt
+     *
+     * @return $this
+     */
     public function setCompiledPrompt(ArrayCollection $compiledPrompt): PromptRun
     {
         $this->compiledPrompt = $compiledPrompt;

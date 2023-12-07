@@ -28,23 +28,25 @@ class PromptCompiler implements PromptCompilerInterface
         $paramKeyValue = $promptRun->params;
         $paramKeyValueReplacements = [];
 
-        $wrap = fn ($what) => "$promptRun->paramOpenTag$what$promptRun->paramCloseTag";
+        $wrap = fn (string $what): string => "$promptRun->paramOpenTag$what$promptRun->paramCloseTag";
 
-        foreach ($paramKeyValue as $param) {
+        foreach ($paramKeyValue ?? [] as $param) {
             if ($param->type === Type::NESTED) {
-                if (empty($param->value)) {
+                if ($param->value === null || $param->value === '') {
                     $paramKeyValueReplacements[$wrap($param->key)] = '';
                 } else {
                     $nestedParamKeyValue = [];
-                    foreach ($param->nestedParams as $nestedParam) {
+                    foreach ($param->nestedParams ?? [] as $nestedParam) {
                         $nestedParamKeyValue[$wrap($nestedParam->key)] = $nestedParam->value ?? '';
                     }
 
-                    $paramKeyValueReplacements[$wrap($param->key)] = str_replace(
-                        array_keys($nestedParamKeyValue),
-                        array_values($nestedParamKeyValue),
-                        $param->nestedPrompt,
-                    );
+                    if ($param->nestedPrompt !== null) {
+                        $paramKeyValueReplacements[$wrap($param->key)] = str_replace(
+                            array_keys($nestedParamKeyValue),
+                            array_values($nestedParamKeyValue),
+                            $param->nestedPrompt,
+                        );
+                    }
                 }
 
                 continue;
@@ -53,8 +55,9 @@ class PromptCompiler implements PromptCompilerInterface
             $paramKeyValueReplacements[$wrap($param->key)] = $param->value ?? '';
         }
 
+        /** @var ArrayCollection<array-key, PromptMessage> $compiledPrompt */
         $compiledPrompt = new ArrayCollection();
-        foreach ($promptRun->promptMessages as $key => $message) {
+        foreach ($promptRun->promptMessages->getValues() as $key => $message) {
             $compiledPrompt->set($key, new PromptMessage(
                 role: $message->role,
                 content: str_replace(

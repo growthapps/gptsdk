@@ -45,6 +45,14 @@
             }
         ]
     },
+    "pre-push": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "composer test"
+            }
+        ]
+    },
     "prepare-commit-msg": {
         "enabled": true,
         "actions": [

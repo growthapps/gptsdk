@@ -16,9 +16,12 @@ use Growthapps\Gptsdk\Enum\Type;
 
 class PromptParam
 {
+    /**
+     * @param ArrayCollection<array-key, PromptParam>|null $nestedParams
+     */
     public function __construct(
         public readonly string $key,
-        public readonly Type $type,
+        public readonly ?Type $type,
         public readonly ?string $value = null,
         public readonly ?string $defaultValue = null,
         public readonly ?ArrayCollection $nestedParams = null,

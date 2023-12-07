@@ -18,7 +18,7 @@ class PromptLocalRunner implements PromptRunnerInterface
 {
     public function __construct(
         private PromptCompilerInterface $promptCompiler,
-        /** @var ArrayCollection<VendorInterface> $vendors */
+        /** @var ArrayCollection<string, VendorInterface> $vendors */
         private ArrayCollection $vendors,
         private ?PromptLoggerInterface $promptLogger = null,
     ) {
