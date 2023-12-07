@@ -8,6 +8,8 @@ use Growthapps\Gptsdk\ApiClient\GptSdkApiClient;
 use Growthapps\Gptsdk\Prompt;
 use Growthapps\Gptsdk\PromptMessage;
 use Growthapps\Gptsdk\Request\GetPromptRequest;
+use Mockery;
+use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -15,46 +17,47 @@ class GptSdkApiClientTest extends TestCase
 {
     public function testGetPrompts()
     {
-        $mockHttpClient = $this->getMockBuilder(HttpClientInterface::class)->getMock();
-
-        $mockResult = $this->getMockBuilder(ResponseInterface::class)->getMock();
-
-        $mockResult->expects($this->once())->method('getStatusCode')->willReturn(200);
-
-        $mockHttpClient->expects($this->once())->method('request')->willReturn($mockResult);
-
-        $mockResult->expects($this->once())->method('toArray')->willReturn([
-            'data' => [
-                [
-                    'key' => 'new-prompt',
-                    'prompt' => [
-                        [
-                            'role' => 'user',
-                            'content' => 'hello gpt.',
-                        ]
-                    ],
-                    'attributes' => [
-                        'key',
-                        'type',
-                        'value',
-                    ],
-                    'params' => [
-                        'key',
-                        'type',
-                        'nestedPrompt',
-                        'nestedParams' => [
+        $requestMock = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => 200,
+            'toArray' => [
+                'data' => [
+                    [
+                        'key' => 'new-prompt',
+                        'prompt' => [
+                            [
+                                'role' => 'user',
+                                'content' => 'hello gpt.',
+                            ]
+                        ],
+                        'attributes' => [
                             'key',
                             'type',
                             'value',
                         ],
-                    ],
-                    'llmOptions',
-                    'connector' => [
-                        'vendor' ,
+                        'params' => [
+                            'key',
+                            'type',
+                            'nestedPrompt',
+                            'nestedParams' => [
+                                'key',
+                                'type',
+                                'value',
+                            ],
+                        ],
+                        'llmOptions',
+                        'connector' => [
+                            'vendor' ,
+                        ],
                     ],
                 ],
-            ],
+            ]
         ]);
+        $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
+            'request' => $requestMock
+        ]);
+        $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
+
+
         $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
         $prompts = $gptSdk->getPrompts(new GetPromptRequest('abc'));
         $newPrompt = $prompts->get(0);

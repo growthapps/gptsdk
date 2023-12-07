@@ -4,6 +4,7 @@ namespace Growthapps\Test\Gptsdk;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Growthapps\Gptsdk\Compiler\PromptCompiler;
+use PHPUnit\Framework\TestCase;
 use Growthapps\Gptsdk\Enum\{PromptRunState, VendorEnum, Type};
 use Growthapps\Gptsdk\PromptMessage;
 use Growthapps\Gptsdk\PromptParam;
