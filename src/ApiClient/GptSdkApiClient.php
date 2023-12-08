@@ -38,6 +38,7 @@ class GptSdkApiClient
 
     final public function getPrompts(GetPromptRequest $request): ArrayCollection
     {
+
         $result = $this->httpClient->request(
             'GET',
             '/prompts',
@@ -138,8 +139,8 @@ class GptSdkApiClient
 
         return $promptRun
             ->setResponse($json['result']['result'])
-            ->setOutputCost($json['result']['inputCost'])
-            ->setInputCost($json['result']['outputCost'])
+            ->setOutputCost($json['result']['outputCost'])
+            ->setInputCost($json['result']['inputCost'])
             ->setState(PromptRunState::SUCCESS);
     }
 }
