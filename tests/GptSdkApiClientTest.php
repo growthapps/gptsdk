@@ -66,6 +66,22 @@ class GptSdkApiClientTest extends TestCase
         $newPromptMessage = $newPrompt->promptMessages->get(0);
         assert($newPromptMessage instanceof PromptMessage);
         $this->assertEquals($newPromptMessage->content, 'hello gpt.');
+    }
 
+    public function testRunPromptBadRequest()
+    {
+        //status code != 200
+
+
+    }
+
+    public function testRunPromptApiError()
+    {
+        //!empty($json['result']['error'])
+    }
+
+    public function testRunPrompt()
+    {
+        // result result
     }
 }
