@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Growthapps\Test\Gptsdk;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Growthapps\Gptsdk\Compiler\PromptCompiler;
-use PHPUnit\Framework\TestCase;
-use Growthapps\Gptsdk\Enum\{PromptRunState, VendorEnum, Type};
+use Growthapps\Gptsdk\Enum\PromptRunState;
+use Growthapps\Gptsdk\Enum\Type;
+use Growthapps\Gptsdk\Enum\VendorEnum;
 use Growthapps\Gptsdk\PromptMessage;
 use Growthapps\Gptsdk\PromptParam;
 use Growthapps\Gptsdk\PromptRun;
+use PHPUnit\Framework\TestCase;
+
+use function assert;
 
 class PromptCompilerTest extends TestCase
 {
@@ -45,15 +51,11 @@ class PromptCompilerTest extends TestCase
 
         $promptRun = $this->promptCompiler->compile($promptRun);
         $compiledPrompt = $promptRun->getCompiledPrompt();
-
+        $this->assertNotNull($compiledPrompt);
         $this->assertCount(1, $compiledPrompt);
-
         $this->assertEquals(PromptRunState::COMPILED, $promptRun->getState());
-
-        $compiledMessage =  $compiledPrompt->get(0);
-
+        $compiledMessage = $compiledPrompt->get(0);
         assert($compiledMessage instanceof PromptMessage);
         $this->assertEquals('Hello gpt! How are you? Reply in angry tone.', $compiledMessage->content);
-
     }
 }

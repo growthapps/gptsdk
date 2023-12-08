@@ -19,9 +19,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+use function assert;
+
 class GptSdkApiClientTest extends TestCase
 {
-    public function testGetPrompts()
+    public function testGetPrompts(): void
     {
         $requestMock = Mockery::mock(ResponseInterface::class, [
             'getStatusCode' => 200,
@@ -33,14 +35,14 @@ class GptSdkApiClientTest extends TestCase
                             [
                                 'role' => 'user',
                                 'content' => 'hello gpt.',
-                            ]
+                            ],
                         ],
                         'attributes' => [
-                           [
+                            [
                                 'key' => 'attrKey',
                                 'type' => 'nested',
                                 'value' => 'testattr',
-                           ]
+                            ],
                         ],
                         'params' => [
                             [
@@ -52,37 +54,36 @@ class GptSdkApiClientTest extends TestCase
                                         'key' => 'new-nestedParam',
                                         'type' => 'nested',
                                         'value' => 'nestedValue',
-                                        ]
+                                    ],
                                 ],
-                            ]
+                            ],
                         ],
-                        'llmOptions' => ["a", "b", "c"],
+                        'llmOptions' => ['a', 'b', 'c'],
                         'connector' => [
                             'vendor' => 'openAi' ,
                         ],
                     ],
                 ],
-            ]
+            ],
         ]);
         $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
-            'request' => $requestMock
+            'request' => $requestMock,
         ]);
         $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
-
 
         $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
         $prompts = $gptSdk->getPrompts(new GetPromptRequest('new-prompt'));
         $newPrompt = $prompts->get(0);
         assert($newPrompt instanceof Prompt);
-        $this->assertEquals(get_class($newPrompt), Prompt::class);
+        $this->assertEquals($newPrompt::class, Prompt::class);
+        $this->assertNotNull($newPrompt->promptMessages);
         $newPromptMessage = $newPrompt->promptMessages->get(0);
         assert($newPromptMessage instanceof PromptMessage);
         $this->assertEquals($newPromptMessage->content, 'hello gpt.');
     }
 
-    public function testRunPromptBadRequest()
+    public function testRunPromptBadRequest(): void
     {
-        //status code != 200
         $requestMock = Mockery::mock(ResponseInterface::class, [
             'getStatusCode' => 400,
             'toArray' => [
@@ -90,14 +91,14 @@ class GptSdkApiClientTest extends TestCase
                     'result' => 'success',
                     'error' => 'failRequest',
                     'inputCost' => 100,
-                    'outputCost' => 200
-                ]
+                    'outputCost' => 200,
+                ],
             ],
-            'getContent' => 'newError'
+            'getContent' => 'newError',
         ]);
 
         $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
-            'request' => $requestMock
+            'request' => $requestMock,
         ]);
         $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
         $promptRun = new PromptRun(
@@ -127,11 +128,10 @@ class GptSdkApiClientTest extends TestCase
 
         $this->assertEquals(PromptRunState::FAILED, $promptRunResult->getState());
         $this->assertEquals('newError', $promptRunResult->getError());
-
     }
-    public function testRunPromptApiError()
+
+    public function testRunPromptApiError(): void
     {
-        //!empty($json['result']['error'])
         $requestMock = Mockery::mock(ResponseInterface::class, [
             'getStatusCode' => 200,
             'toArray' => [
@@ -139,14 +139,14 @@ class GptSdkApiClientTest extends TestCase
                     'result' => 'success',
                     'error' => 'failRequest',
                     'inputCost' => 100,
-                    'outputCost' => 200
-                ]
+                    'outputCost' => 200,
+                ],
             ],
-            'getContent' => 'newError'
+            'getContent' => 'newError',
         ]);
 
         $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
-            'request' => $requestMock
+            'request' => $requestMock,
         ]);
         $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
         $promptRun = new PromptRun(
@@ -178,10 +178,8 @@ class GptSdkApiClientTest extends TestCase
         $this->assertEquals('failRequest', $promtRunResult->getError());
     }
 
-    public function testRunPrompt()
+    public function testRunPrompt(): void
     {
-        // result result
-
         $requestMock = Mockery::mock(ResponseInterface::class, [
             'getStatusCode' => 200,
             'toArray' => [
@@ -189,14 +187,14 @@ class GptSdkApiClientTest extends TestCase
                     'result' => 'success',
                     'error' => '',
                     'inputCost' => 100,
-                    'outputCost' => 200
-                ]
+                    'outputCost' => 200,
+                ],
             ],
-            'getContent' => 'newError'
+            'getContent' => 'newError',
         ]);
 
         $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
-            'request' => $requestMock
+            'request' => $requestMock,
         ]);
         $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
         $promptRun = new PromptRun(
@@ -224,8 +222,8 @@ class GptSdkApiClientTest extends TestCase
         $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
         $promptRunResult = $gptSdk->runPrompt($promptRun);
         $this->assertEquals('success', $promptRunResult->getResponse());
-        $this->assertEquals(100, $promptRunResult->getOutputCost());
-        $this->assertEquals(200, $promptRunResult->getInputCost());
+        $this->assertEquals(200, $promptRunResult->getOutputCost());
+        $this->assertEquals(100, $promptRunResult->getInputCost());
         $this->assertEquals(PromptRunState::SUCCESS, $promptRunResult->getState());
     }
 }

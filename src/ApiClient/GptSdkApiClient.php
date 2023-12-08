@@ -52,7 +52,6 @@ class GptSdkApiClient
      */
     final public function getPrompts(GetPromptRequest $request): ArrayCollection
     {
-
         $result = $this->httpClient->request(
             'GET',
             '/prompts',
