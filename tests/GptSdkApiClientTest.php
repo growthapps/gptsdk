@@ -21,64 +21,64 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class GptSdkApiClientTest extends TestCase
 {
-//    public function testGetPrompts()
-//    {
-//        $requestMock = Mockery::mock(ResponseInterface::class, [
-//            'getStatusCode' => 200,
-//            'toArray' => [
-//                'data' => [
-//                    [
-//                        'key' => 'new-prompt',
-//                        'prompt' => [
-//                            [
-//                                'role' => 'user',
-//                                'content' => 'hello gpt.',
-//                            ]
-//                        ],
-//                        'attributes' => [
-//                           [
-//                                'key' => 'attrKey',
-//                                'type' => 'nested',
-//                                'value' => 'testattr',
-//                           ]
-//                        ],
-//                        'params' => [
-//                            [
-//                                'key' => 'paramKey',
-//                                'type' => 'nested',
-//                                'nestedPrompt' => 'new-prompt2',
-//                                'nestedParams' => [
-//                                    [
-//                                        'key' => 'new-nestedParam',
-//                                        'type' => 'nested',
-//                                        'value' => 'nestedValue',
-//                                        ]
-//                                ],
-//                            ]
-//                        ],
-//                        'llmOptions' => ["a", "b", "c"],
-//                        'connector' => [
-//                            'vendor' => 'openAi' ,
-//                        ],
-//                    ],
-//                ],
-//            ]
-//        ]);
-//        $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
-//            'request' => $requestMock
-//        ]);
-//        $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
-//
-//
-//        $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
-//        $prompts = $gptSdk->getPrompts(new GetPromptRequest('new-prompt'));
-//        $newPrompt = $prompts->get(0);
-//        assert($newPrompt instanceof Prompt);
-//        $this->assertEquals(get_class($newPrompt), Prompt::class);
-//        $newPromptMessage = $newPrompt->promptMessages->get(0);
-//        assert($newPromptMessage instanceof PromptMessage);
-//        $this->assertEquals($newPromptMessage->content, 'hello gpt.');
-//    }
+    public function testGetPrompts()
+    {
+        $requestMock = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => 200,
+            'toArray' => [
+                'data' => [
+                    [
+                        'key' => 'new-prompt',
+                        'prompt' => [
+                            [
+                                'role' => 'user',
+                                'content' => 'hello gpt.',
+                            ]
+                        ],
+                        'attributes' => [
+                           [
+                                'key' => 'attrKey',
+                                'type' => 'nested',
+                                'value' => 'testattr',
+                           ]
+                        ],
+                        'params' => [
+                            [
+                                'key' => 'paramKey',
+                                'type' => 'nested',
+                                'nestedPrompt' => 'new-prompt2',
+                                'nestedParams' => [
+                                    [
+                                        'key' => 'new-nestedParam',
+                                        'type' => 'nested',
+                                        'value' => 'nestedValue',
+                                        ]
+                                ],
+                            ]
+                        ],
+                        'llmOptions' => ["a", "b", "c"],
+                        'connector' => [
+                            'vendor' => 'openAi' ,
+                        ],
+                    ],
+                ],
+            ]
+        ]);
+        $mockHttpClient = Mockery::mock(HttpClientInterface::class, [
+            'request' => $requestMock
+        ]);
+        $mockHttpClient->shouldReceive('withOptions')->andReturn($mockHttpClient);
+
+
+        $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
+        $prompts = $gptSdk->getPrompts(new GetPromptRequest('new-prompt'));
+        $newPrompt = $prompts->get(0);
+        assert($newPrompt instanceof Prompt);
+        $this->assertEquals(get_class($newPrompt), Prompt::class);
+        $newPromptMessage = $newPrompt->promptMessages->get(0);
+        assert($newPromptMessage instanceof PromptMessage);
+        $this->assertEquals($newPromptMessage->content, 'hello gpt.');
+    }
 
     public function testRunPromptBadRequest()
     {
@@ -123,10 +123,10 @@ class GptSdkApiClientTest extends TestCase
         );
 
         $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
-        $promtRunResult = $gptSdk->runPrompt($promptRun);
+        $promptRunResult = $gptSdk->runPrompt($promptRun);
 
-        $this->assertEquals(PromptRunState::FAILED, $promtRunResult->getState());
-        $this->assertEquals('newError', $promtRunResult->getError());
+        $this->assertEquals(PromptRunState::FAILED, $promptRunResult->getState());
+        $this->assertEquals('newError', $promptRunResult->getError());
 
     }
     public function testRunPromptApiError()
@@ -222,10 +222,10 @@ class GptSdkApiClientTest extends TestCase
         );
 
         $gptSdk = new GptSdkApiClient($mockHttpClient, 'abc');
-        $promtRunResult = $gptSdk->runPrompt($promptRun);
-        $this->assertEquals('success', $promtRunResult->getResponse());
-        $this->assertEquals(100, $promtRunResult->getOutputCost());
-        $this->assertEquals(200, $promtRunResult->getInputCost());
-        $this->assertEquals(PromptRunState::SUCCESS, $promtRunResult->getState());
+        $promptRunResult = $gptSdk->runPrompt($promptRun);
+        $this->assertEquals('success', $promptRunResult->getResponse());
+        $this->assertEquals(100, $promptRunResult->getOutputCost());
+        $this->assertEquals(200, $promptRunResult->getInputCost());
+        $this->assertEquals(PromptRunState::SUCCESS, $promptRunResult->getState());
     }
 }
