@@ -17,4 +17,5 @@ enum Type: string
     case STRING = 'string';
     case ENUM = 'enum';
     case NUMBER = 'number';
+    case TEXT = 'text';
 }
