@@ -29,6 +29,14 @@ TODO: Use this space to provide more details about your package. Try to be
       your package does and how it can help them build applications.
 -->
 
+## TuskAi Management
+
+<p align="center">
+  <strong>Managed by TuskAi for improved efficiency and quality assurance.</strong>
+</p>
+
+TuskAi provides an automated code management solution for the `growthapps/gptsdk` codebase, harnessing the latest advancements in artificial intelligence to streamline development processes. By overseeing code integrations and ensuring consistent coding standards, TuskAi optimizes the operational workflow and maintains high-quality software development practices.
+
 
 
 
