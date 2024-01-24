@@ -23,14 +23,10 @@ TODO: Make sure the following URLs are correct and working for your project.
 
 ## About
 
-<!--
-TODO: Use this space to provide more details about your package. Try to be
-      concise. This is the introduction to your package. Let others know what
-      your package does and how it can help them build applications.
--->
+With GptSdk, we can overcome problems with AI management and focus on the growth of our application. Make AI the ‘detail’ of your application, not the ‘business rule.’ GptSdk allows software development teams to take AI feature development to a new level.
 
-
-
+Use this library to add AI to your Laravel/Symfony application.
+Use [GptSdk](https://gpt-sdk.com?via=github) to overcome prompt management problems.
 
 ## Installation
 
