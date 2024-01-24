@@ -24,7 +24,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function array_column;
 use function array_map;
-use function count;
+use function mb_strlen;
 
 class GptSdkApiClient
 {
@@ -174,7 +174,7 @@ class GptSdkApiClient
         }
 
         $result = $response->toArray();
-        if (isset($result['errorMessage']) && mb_strlen($result['errorMessage']) > 0) {
+        if (isset($result['errorMessage']) && mb_strlen((string) $result['errorMessage']) > 0) {
             return $promptRun
                 ->setError((string) ($result['errorMessage'] ?? ''))
                 ->setState(PromptRunState::FAILED);
