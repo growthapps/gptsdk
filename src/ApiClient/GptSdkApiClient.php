@@ -174,7 +174,7 @@ class GptSdkApiClient
         }
 
         $json = $response->toArray();
-        $result = (array) ($json['result'] ?? []);
+        $result = (array) ($json['output'] ?? []);
         if (count($result) === 0 || $result['error']) {
             return $promptRun
                 ->setError((string) ($result['error'] ?? ''))
@@ -182,7 +182,7 @@ class GptSdkApiClient
         }
 
         return $promptRun
-            ->setResponse((string) ($result['result'] ?? ''))
+            ->setResponse((string) ($result['output'] ?? ''))
             ->setOutputCost((int) ($result['outputCost'] ?? 0))
             ->setInputCost((int) ($result['inputCost'] ?? 0))
             ->setState(PromptRunState::SUCCESS);
