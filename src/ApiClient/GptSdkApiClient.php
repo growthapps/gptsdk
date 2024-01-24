@@ -181,6 +181,7 @@ class GptSdkApiClient
                 ->setState(PromptRunState::FAILED);
         }
 
+
         return $promptRun
             ->setResponse((string) ($result['output'] ?? ''))
             ->setOutputCost((int) ($result['outputCost'] ?? 0))
