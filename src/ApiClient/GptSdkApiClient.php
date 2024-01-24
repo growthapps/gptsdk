@@ -173,14 +173,12 @@ class GptSdkApiClient
                 ->setState(PromptRunState::FAILED);
         }
 
-        $json = $response->toArray();
-        $result = (array) ($json['output'] ?? []);
+        $result = $response->toArray();
         if (count($result) === 0 || $result['error']) {
             return $promptRun
                 ->setError((string) ($result['error'] ?? ''))
                 ->setState(PromptRunState::FAILED);
         }
-
 
         return $promptRun
             ->setResponse((string) ($result['output'] ?? ''))

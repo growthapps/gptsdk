@@ -135,12 +135,10 @@ class GptSdkApiClientTest extends TestCase
         $requestMock = Mockery::mock(ResponseInterface::class, [
             'getStatusCode' => 200,
             'toArray' => [
-                'result' => [
-                    'output' => 'success',
-                    'error' => 'failRequest',
-                    'inputCost' => 100,
-                    'outputCost' => 200,
-                ],
+                'output' => 'success',
+                'error' => 'failRequest',
+                'inputCost' => 100,
+                'outputCost' => 200,
             ],
             'getContent' => 'newError',
         ]);
@@ -183,12 +181,10 @@ class GptSdkApiClientTest extends TestCase
         $requestMock = Mockery::mock(ResponseInterface::class, [
             'getStatusCode' => 200,
             'toArray' => [
-                'result' => [
-                    'output' => 'success',
-                    'error' => '',
-                    'inputCost' => 100,
-                    'outputCost' => 200,
-                ],
+                'output' => 'success',
+                'error' => '',
+                'inputCost' => 100,
+                'outputCost' => 200,
             ],
             'getContent' => 'newError',
         ]);
