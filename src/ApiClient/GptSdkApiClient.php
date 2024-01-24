@@ -31,11 +31,11 @@ class GptSdkApiClient
     public function __construct(
         private HttpClientInterface $httpClient,
         string $apiKey,
-        string $version = 'v1',
+        private string $version = 'v1',
     ) {
         $this->httpClient = $this->httpClient->withOptions(
             [
-                'base_uri' => 'https://gpt-sdk.com/api/' . $version,
+                'base_uri' => 'https://gpt-sdk.com/',
                 'auth_bearer' => $apiKey,
             ],
         );
@@ -158,7 +158,7 @@ class GptSdkApiClient
 
         $response = $this->httpClient->request(
             'POST',
-            "/prompts/$promptRun->promptKey/run",
+            "/api/$this->version/prompts/$promptRun->promptKey/run",
             [
                 'json' => [
                     'paramValues' => $paramsArray,
