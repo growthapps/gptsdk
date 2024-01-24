@@ -174,9 +174,9 @@ class GptSdkApiClient
         }
 
         $result = $response->toArray();
-        if (count($result) === 0 || $result['error']) {
+        if (isset($result['errorMessage']) && mb_strlen($result['errorMessage']) > 0) {
             return $promptRun
-                ->setError((string) ($result['error'] ?? ''))
+                ->setError((string) ($result['errorMessage'] ?? ''))
                 ->setState(PromptRunState::FAILED);
         }
 

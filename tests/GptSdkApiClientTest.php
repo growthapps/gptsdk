@@ -136,7 +136,7 @@ class GptSdkApiClientTest extends TestCase
             'getStatusCode' => 200,
             'toArray' => [
                 'output' => 'success',
-                'error' => 'failRequest',
+                'errorMessage' => 'failRequest',
                 'inputCost' => 100,
                 'outputCost' => 200,
             ],
@@ -182,7 +182,7 @@ class GptSdkApiClientTest extends TestCase
             'getStatusCode' => 200,
             'toArray' => [
                 'output' => 'success',
-                'error' => '',
+                'errorMessage' => '',
                 'inputCost' => 100,
                 'outputCost' => 200,
             ],
