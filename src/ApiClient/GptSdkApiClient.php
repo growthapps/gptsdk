@@ -162,7 +162,7 @@ class GptSdkApiClient
             [
                 'json' => [
                     'paramValues' => $paramsArray,
-                    'attributeValues' => $promptRun->attributes,
+                    'attributeValues' => $promptRun->attributes->toArray(),
                 ],
             ],
         );
@@ -185,5 +185,29 @@ class GptSdkApiClient
             ->setOutputCost((int) ($result['outputCost'] ?? 0))
             ->setInputCost((int) ($result['inputCost'] ?? 0))
             ->setState(PromptRunState::SUCCESS);
+    }
+
+    public function getLogsCount(
+        int $timestampFrom,
+        int $timestampTo,
+        ?string $promptKey = null,
+        ?ArrayCollection $attributeValues = null
+    ): int {
+        $response = $this->httpClient->request(
+            'GET',
+            "/api/$this->version/logs/count",
+            [
+                'query' => [
+                    'dateFrom' => $timestampFrom,
+                    'dateTo' => $timestampTo,
+                    'promptKey' => $promptKey,
+                    'attributeValues' => $attributeValues?->toArray()
+                ]
+            ]
+        );
+
+        $result = $response->toArray();
+
+        return (int) $result['count'] ?? 0;
     }
 }
