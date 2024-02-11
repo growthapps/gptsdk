@@ -54,9 +54,9 @@ class GptSdkApiClient
     {
         $result = $this->httpClient->request(
             'GET',
-            '/prompts',
+            "/api/$this->version/prompts",
             [
-                'json' => [
+                'query' => [
                     'key' => $request->promptKey,
                 ],
             ],

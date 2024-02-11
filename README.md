@@ -21,14 +21,12 @@ TODO: Make sure the following URLs are correct and working for your project.
 -->
 
 
-## About
-
 With GptSdk, we can overcome problems with AI management and focus on the growth of our application. Make AI the ‘detail’ of your application, not the ‘business rule.’ GptSdk allows software development teams to take AI feature development to a new level.
 
 Use this library to add AI to your Laravel/Symfony application.
 Use [GptSdk](https://gpt-sdk.com?via=github) to overcome prompt management problems.
 
-## Installation
+## 📲 Installation
 
 Install this package as a dependency using [Composer](https://getcomposer.org).
 
@@ -36,23 +34,74 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 composer require growthapps/gptsdk
 ```
 
-<!--
-## Usage
 
-Provide a brief description or short example of how to use this library.
-If you need to provide more detailed examples, use the `docs/` directory
-and provide a link here to the documentation.
-
+## 🎢 Usage
+You can use this library without GptSdk account.
+Just install this package into your laravel/symfony application and enjoy openai integration.
 ``` php
-use Growthapps\Gptsdk\Example;
+$promptLocalRunner = new PromptLocalRunner(
+    new PromptCompiler(),
+    new ArrayCollection([
+        VendorEnum::OPENAI->value => new OpenAiVendor(
+            HttpClient::create()
+        )
+    ],
+    new PromptRunLogger()
+);
 
-$example = new Example();
-echo $example->greet('fellow human');
+$promptRun = $promptLocalRunner->run(
+    new PromptRun(
+        vendorKey: VendorEnum::OPENAI,
+        promptMessages: new ArrayCollection(
+            [
+                new PromptMessage(
+                    role: 'User',
+                    content: 'Hello gpt! How are you? Reply in [[tone]] tone.'
+                )
+            ]
+        ),
+        promptKey: 'hello_prompt',
+        params: new ArrayCollection(
+            [
+                new PromptParam(
+                    type: Type::STRING,
+                    key: 'tone',
+                    value: 'angry'
+                )
+            ]
+        ),
+    )
+);
 ```
--->
 
+If you already created GptSdk account you can use `GptSdkApiClient`:
+- create prompt in the GptSdk (https://gpt-sdk.com?via=github)
+- set prompt key under API section on the right
+- copy prompt key, api key and use `GptSdkApiClient` to send prompt in your code:
+```php
+$gptSdkClient = new GptSdkApiClient(
+    HttpClient::create(),
+    'myapikey'
+);
+$promptRun = $gptSdkClient->runPrompt(
+    new PromptRun(
+        promptKey: 'hello_prompt',
+        params: new ArrayCollection(
+            [
+                new PromptParam(
+                    type: Type::STRING,
+                    key: 'tone',
+                    value: 'angry'
+                )
+            ]
+        ),
+    )
+);
 
-## Architecuture
+echo $promptRun->getResponse();
+```
+
+## 🏯 Architecuture
 ### Runners
 #### PromptApiRunner
 Sends a request to gpt-sdk.com
@@ -63,6 +112,8 @@ Sends a request directly to llm.
 
 ### Webhooks (TBD)
 
+## 📰 Articles
+#### [How to create AI tools 10x faster](https://medium.com/@moroz97andrze/unleashing-ai-potential-overcoming-prompt-management-hurdles-with-gptsdk-43f067681fa1)
 
 ## Contributing
 
