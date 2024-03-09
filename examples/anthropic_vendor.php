@@ -22,7 +22,7 @@ $promptRun = $anthropicAiVendor->execute(
             )
         ]),
         llmOptions: [
-            'api_key' => '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',
+            'api_key' => 'sk-ant-api03-EmdFzZ_lTZs3qx6P6LC1FBgk9ONxYl',
             'model' => 'claude-3-opus-20240229'
         ]
     ))
