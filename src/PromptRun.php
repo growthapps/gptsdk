@@ -40,9 +40,9 @@ class PromptRun
      * @param ArrayCollection<string, mixed>|null $payload
      */
     public function __construct(
-        public readonly VendorEnum $vendorKey,
-        public readonly ArrayCollection $promptMessages,
-        public readonly string $promptKey,
+        public readonly ?VendorEnum $vendorKey = null,
+        public readonly ?ArrayCollection $promptMessages = null,
+        public readonly ?string $promptKey = null,
         public readonly ?array $llmOptions = null,
         public readonly ?ArrayCollection $params = null,
         public readonly ?ArrayCollection $attributes = null,
@@ -58,7 +58,7 @@ class PromptRun
      */
     public function getCompiledPrompt(): ?ArrayCollection
     {
-        return $this->compiledPrompt;
+        return $this->compiledPrompt ?? $this->promptMessages;
     }
 
     /**

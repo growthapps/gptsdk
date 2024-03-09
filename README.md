@@ -101,6 +101,13 @@ $promptRun = $gptSdkClient->runPrompt(
 echo $promptRun->getResponse();
 ```
 
+## 🧠 Ai Vendors
+### OpenAi
+The GptSdk PHP library serves as a powerful bridge between PHP applications and OpenAI's completion API, seamlessly integrating the two for enhanced language processing capabilities. By incorporating the GptSdk library into PHP-based projects, developers can effortlessly tap into OpenAI's state-of-the-art language models to achieve advanced natural language generation and comprehension. This integration enables PHP applications to leverage the sophisticated capabilities of OpenAI, automating complex language-related tasks, generating creative content, and enhancing overall user engagement. The GptSdk library streamlines the integration process, offering a user-friendly interface that facilitates efficient communication with OpenAI's completion API. With GptSdk, PHP developers can harness the full potential of OpenAI's language models, empowering them to create dynamic, intelligent applications that elevate the quality and responsiveness of their projects.
+
+### Anthropic
+The GptSdk PHP library seamlessly connects PHP applications with the Anthropic API, unlocking advanced AI capabilities. With GptSdk, PHP developers can easily integrate and leverage Anthropic's powerful features, enabling intelligent data analysis, pattern recognition, and streamlined decision-making. The user-friendly interface simplifies the integration process, empowering developers to enhance their PHP projects with Anthropic's cutting-edge AI functionalities. GptSdk facilitates a new era of adaptive PHP applications, redefining the landscape of AI-driven solutions through effortless interaction with the Anthropic API.
+
 ## 🏯 Architecuture
 ### Runners
 #### PromptApiRunner

@@ -57,7 +57,7 @@ class PromptCompiler implements PromptCompilerInterface
 
         /** @var ArrayCollection<array-key, PromptMessage> $compiledPrompt */
         $compiledPrompt = new ArrayCollection();
-        foreach ($promptRun->promptMessages->getValues() as $key => $message) {
+        foreach ($promptRun->promptMessages?->getValues() ?? [] as $key => $message) {
             $compiledPrompt->set($key, new PromptMessage(
                 role: $message->role,
                 content: str_replace(

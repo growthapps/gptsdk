@@ -7,4 +7,5 @@ namespace Growthapps\Gptsdk\Enum;
 enum VendorEnum: string
 {
     case OPENAI = 'openai';
+    case ANTHROPIC = 'anthropic';
 }

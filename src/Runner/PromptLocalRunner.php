@@ -27,7 +27,12 @@ class PromptLocalRunner implements PromptRunnerInterface
     final public function run(PromptRun $promptRun): PromptRun
     {
         $promptRun = $this->promptCompiler->compile($promptRun);
-        $vendor = $this->vendors->get($promptRun->vendorKey->value);
+        $vendorKey = $promptRun->vendorKey?->value;
+        if ($vendorKey === null) {
+            return $promptRun;
+        }
+
+        $vendor = $this->vendors->get($vendorKey);
         try {
             if ($vendor) {
                 assert($vendor instanceof VendorInterface);
