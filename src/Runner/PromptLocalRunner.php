@@ -28,7 +28,7 @@ class PromptLocalRunner implements PromptRunnerInterface
     {
         $promptRun = $this->promptCompiler->compile($promptRun);
         $vendorKey = $promptRun->vendorKey?->value;
-        if (null === $vendorKey) {
+        if ($vendorKey === null) {
             return $promptRun;
         }
 
