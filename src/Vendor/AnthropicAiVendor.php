@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Growthapps\Gptsdk\Vendor;
 
 use Growthapps\Gptsdk\Enum\PromptRunState;
 use Growthapps\Gptsdk\PromptRun;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+use function array_flip;
+use function array_intersect_key;
+use function array_merge;
 
 class AnthropicAiVendor implements VendorInterface
 {
@@ -33,7 +39,7 @@ class AnthropicAiVendor implements VendorInterface
                 'headers' => [
                     'x-api-key' => $run->llmOptions['api_key'] ?? '',
                     'anthropic-version' => $run->llmOptions['version'] ?? self::DEFAULT_VERSION,
-                    'content-type' => 'application/json'
+                    'content-type' => 'application/json',
                 ],
                 'json' =>
                     array_intersect_key(array_merge(
