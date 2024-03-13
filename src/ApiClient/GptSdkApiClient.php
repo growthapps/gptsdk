@@ -154,7 +154,7 @@ class GptSdkApiClient
                     )->toArray(), 'key', 'value') :
                     $promptParam->value,
             ]
-        )->toArray(), 'key', 'value') : [];
+        )->toArray(), 'value', 'key') : [];
 
         $response = $this->httpClient->request(
             'POST',
