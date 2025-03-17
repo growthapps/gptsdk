@@ -1,4 +1,16 @@
+### ⚠️ Repository Deprecated ⚠️  
+
+This repository has been **abandoned** and is no longer maintained.  
+
+Please use the new repository: **[saassdk/gptsdk-php](https://github.com/saassdk/gptsdk-php)** for the latest updates and improvements.  
+
+We recommend switching to the new version to ensure compatibility, security, and access to new features.  
+
+Thank you for your support! 🚀  
+
+
 <h1 align="center">growthapps/gptsdk</h1>
+
 
 <p align="center">
     <strong>Develop ai features in your application 10x faster</strong>
